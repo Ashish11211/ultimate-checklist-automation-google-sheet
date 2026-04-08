@@ -1,0 +1,49 @@
+function updateTaskStatus() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // Define the sheet names you want the script to run on
+  var allowedSheets = ["name1","name2"]; // Add other sheet names if needed
+  
+  // Get the currently active sheet
+  var sourceSheet = ss.getActiveSheet();
+  
+  // Check if the active sheet is one of the allowed sheets
+  if (allowedSheets.indexOf(sourceSheet.getName()) === -1) {
+    return; // Exit the function if the sheet is not allowed
+  }
+  
+  // Define the master sheet
+  var masterSheet = ss.getSheetByName("Master");
+  
+  // Get the data from the source sheet
+  var sourceData = sourceSheet.getRange(2, 1, sourceSheet.getLastRow() - 1, sourceSheet.getLastColumn()).getValues();
+  
+  // Get the data from the master sheet
+  var masterData = masterSheet.getRange(2, 1, masterSheet.getLastRow() - 1, masterSheet.getLastColumn()).getValues();
+  
+  // Loop through each row in the source sheet
+  for (var i = 0; i < sourceData.length; i++) {
+    var taskId = sourceData[i][0]; // Task ID in column A
+    var status = sourceData[i][4]; // Status in column E
+    
+    // If the status is "Done"
+    if (status === "Done") {
+      // Search for the Task ID in the master sheet
+      for (var j = 0; j < masterData.length; j++) {
+        if (masterData[j][3] == taskId) { // Match Task ID in column A of Master Sheet
+          
+          // Update column H with the current timestamp
+          masterSheet.getRange(j + 2, 8).setValue(new Date());
+          
+          // Update column I with "Done"
+          masterSheet.getRange(j + 2, 9).setValue("Done");
+          
+          // Optionally, clear the status in the source sheet (Col E) after copying
+          sourceSheet.getRange(i + 2, 5).setValue("");
+          
+          break; // Exit the loop once the Task ID is found and updated
+        }
+      }
+    }
+  }
+}
