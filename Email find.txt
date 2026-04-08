@@ -1,0 +1,111 @@
+/************* GROUP BY *************/
+function groupByData(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+    const key = keyGetter(item);
+    const collection = map.get(key);
+
+    if (!collection) {
+      map.set(key, [item]);
+    } else {
+      collection.push(item);
+    }
+  });
+  return map;
+}
+
+/************* TEST EMAIL *************/
+function testEmailCheck() {
+  Logger.log(fetchEmail("ASHISHRANJAN", "Accounts"));
+}
+
+/************* GET EMAIL *************/
+function fetchEmail(theName, theDepartment) {
+  try {
+    let ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName("Doer List");
+    let data = sheet.getRange(1, 1, sheet.getLastRow(), 3).getValues();
+
+    let result = data.filter(r => r[0] === theName && r[1] === theDepartment);
+
+    if (result.length === 0) return "FAILED";
+
+    return result[0][2];
+
+  } catch (e) {
+    Browser.msgBox("Mismatch: " + theName + " / " + theDepartment);
+    return "FAILED";
+  }
+}
+
+/************* FIND IN LIST *************/
+function findEmailByName(name, data) {
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][1] == name) {
+      return data[i][0];
+    }
+  }
+  return "";
+}
+
+/************* LAST ROW SPECIAL *************/
+function getLastRowCustom(range) {
+  let rowNum = 0;
+  let blank = false;
+
+  for (let i = 0; i < range.length; i++) {
+    if (range[i][0] === "" && !blank) {
+      rowNum = i;
+      blank = true;
+    } else if (range[i][0] !== "") {
+      blank = false;
+    }
+  }
+  return rowNum;
+}
+
+/************* RETURN DATE *************/
+function getFutureDate(baseDate, num, hr, min) {
+  let dt = new Date(baseDate.getTime() + 24 * 60 * 60 * 1000 * (num + 1));
+  dt.setHours(hr);
+  dt.setMinutes(min);
+  return dt;
+}
+
+/************* DAY INFO *************/
+function getDayName(dayNum) {
+  const days = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+  return days[dayNum];
+}
+
+/************* TESTING *************/
+function testDateLogic() {
+  let a = Date.parse("4/5/2022");
+  let day = getDayName(a.getDay());
+
+  Logger.log(eval("Date.parse(a).next().month().first().saturday()"));
+}
+
+/************* IMPORT FROM PREVIOUS *************/
+function importOldChecklist() {
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  let importURL = ss.getSheetByName("ImportChecklist").getRange("B2").getValue();
+  let otherSheet = SpreadsheetApp.openByUrl(importURL);
+
+  let otherMaster = otherSheet.getSheetByName("Master");
+  let otherData = otherMaster.getRange(2, 1, otherMaster.getLastRow() - 1, 6).getValues();
+
+  let filtered = otherData.filter(r => !r[5]);
+
+  if (filtered.length === 0) return;
+
+  let currMaster = ss.getSheetByName("Master");
+
+  currMaster.getRange(
+    currMaster.getLastRow() + 1,
+    1,
+    filtered.length,
+    filtered[0].length
+  ).setValues(filtered);
+}
