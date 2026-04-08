@@ -6,10 +6,10 @@ Ultimate Checklist Automation is a powerful Google Sheets–based system that si
 
 This tool helps teams to:
 
-* Tasks assign karne me
-* Daily / Weekly / Monthly planning me
-* Pending tasks ke reminders bhejne me
-* Performance track karne me
+* Assign tasks efficiently
+* Plan daily, weekly, and monthly activities
+* Send reminders for pending tasks
+* Track performance and productivity
 
 ---
 
@@ -20,7 +20,7 @@ This tool helps teams to:
 ✅ Email Reminder System (Auto Gmail Integration)
 ✅ Dashboard & MIS Reporting
 ✅ Archive System (Weekly Data Storage)
-✅ Import Old Data from Another Sheet
+✅ Import Data from Another Sheet
 ✅ Custom Working Day Calendar Support
 
 ---
@@ -31,33 +31,33 @@ This tool helps teams to:
 
 | Sheet Name               | Purpose                          |
 | ------------------------ | -------------------------------- |
-| **Task List**            | Task define karne ke liye        |
+| **Task List**            | Define tasks                     |
 | **Master**               | Auto-generated scheduled tasks   |
 | **Doer List**            | Employee Name, Department, Email |
 | **Dashboard**            | MIS Report & Summary             |
 | **Archive**              | Weekly data storage              |
 | **Setup Sheet**          | Configuration (time, settings)   |
-| **Working Day Calendar** | Working days define              |
-| **Send Tasks To Doer**   | Email format sheet               |
+| **Working Day Calendar** | Define working days              |
+| **Send Tasks To Doer**   | Email formatting sheet           |
 
 ---
 
 ## ⚙️ How It Works
 
-1️⃣ Task List me task add karo
-2️⃣ Script automatically schedule create karta hai
-3️⃣ Tasks "Master Sheet" me generate hote hain
-4️⃣ System daily check karta hai pending tasks
-5️⃣ Reminder emails automatically send hote hain
-6️⃣ Dashboard performance track karta hai
+1️⃣ Add tasks in the Task List sheet
+2️⃣ The script automatically generates schedules
+3️⃣ Tasks are created in the "Master" sheet
+4️⃣ The system checks pending tasks daily
+5️⃣ Reminder emails are sent automatically
+6️⃣ The dashboard tracks performance
 
 ---
 
 ## 📧 Email Automation
 
-* Automatic reminder for **next day pending tasks**
-* Task-wise email notification
-* HTML table format me task sharing
+* Automatic reminders for **next-day pending tasks**
+* Task-wise email notifications
+* Tasks shared in HTML table format
 
 ---
 
@@ -65,46 +65,48 @@ This tool helps teams to:
 
 ### Step 1: Google Sheet Setup
 
-* Sab required sheets create karo (as per structure)
-* "Doer List" me Name, Department, Email fill karo
+* Create all required sheets (as per structure)
+* Fill in Name, Department, and Email in the "Doer List"
+
+---
 
 ### Step 2: Apps Script Setup
 
-1. Google Sheet open karo
-2. Extensions → Apps Script
-3. Code paste karo
-4. Save karo
+1. Open your Google Sheet
+2. Go to Extensions → Apps Script
+3. Paste the code
+4. Save the project
 
 ---
 
 ### Step 3: Trigger Setup
 
-Run karo:
+Run the following function:
 
 ```javascript
 setupSheet()
 ```
 
-👉 Ye automatic daily email trigger set karega
+👉 This will set up the daily email trigger automatically
 
 ---
 
 ### Step 4: Permissions
 
-* First run me Google permissions allow karo
-* Gmail access required hai
+* Allow Google permissions on first run
+* Gmail access is required
 
 ---
 
 ## 🔑 Important Functions
 
-| Function            | Purpose                    |
-| ------------------- | -------------------------- |
-| `createChecklist()` | Task schedule generate     |
-| `sendReminder()`    | Email reminder send        |
-| `fetchEmail()`      | Email fetch from Doer List |
-| `archive()`         | Weekly data store          |
-| `sendToDoer()`      | Task email send            |
+| Function            | Purpose                     |
+| ------------------- | --------------------------- |
+| `createChecklist()` | Generate task schedules     |
+| `sendReminder()`    | Send email reminders        |
+| `fetchEmail()`      | Fetch email from Doer List  |
+| `archive()`         | Store weekly data           |
+| `sendToDoer()`      | Send task details via email |
 
 ---
 
@@ -120,10 +122,10 @@ setupSheet()
 
 ## ⚠️ Important Notes
 
-* Ensure sheet names exactly same ho
-* Email IDs correct hone chahiye
-* Triggers properly set hone chahiye
-* Script timezone match kare
+* Ensure sheet names match exactly
+* Email IDs must be correct
+* Triggers must be properly set
+* Script timezone should match your region
 
 ---
 
@@ -136,23 +138,24 @@ setupSheet()
 
 ---
 
-
 ## 📷 Screenshot
-<img width="1575" height="911" alt="image" src="https://github.com/user-attachments/assets/31d44b50-1436-4635-a2b0-7d14df8c87af" />
 
+<img width="1575" height="911" alt="image" src="https://github.com/user-attachments/assets/31d44b50-1436-4635-a2b0-7d14df8c87af" />
 
 ---
 
 ## ⚠️ Note
+
 This project uses **dummy/modified data** for portfolio purposes. No confidential company data is shared.
 
 ---
 
 ## 📫 Contact
-- Name: Ashish Ranjan 
-- 📧 Email: ashishranjan11211@gmail.com  
-- 🔗 LinkedIn: linkedin.com/in/ashishranjanji09
+
+* Name: Ashish Ranjan
+* 📧 Email: [ashishranjan11211@gmail.com](mailto:ashishranjan11211@gmail.com)
+* 🔗 LinkedIn: linkedin.com/in/ashishranjanji09
 
 ---
 
-⭐ If you like this project, give it a star!
+⭐ If you like this project, please give it a star!
