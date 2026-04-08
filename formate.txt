@@ -1,0 +1,151 @@
+/************* MENU *************/
+function onOpen() {
+  createMenu();
+}
+
+function createMenu() {
+  var ui = SpreadsheetApp.getUi();
+  ui.createMenu('Ultimate Checklist')
+    .addItem('Setup Sheet', 'setupSheet')
+    .addItem('Update Task', 'updateTaskStatus')
+    .addToUi();
+}
+
+/************* DATE HELPERS *************/
+Date.prototype.addDays = function (days) {
+  var date = new Date(this.valueOf());
+  date.setDate(date.getDate() + days);
+  return date;
+};
+
+/************* TRIGGER SETUP *************/
+function setupSheet() {
+  removeTrigger();
+  var sheet = SpreadsheetApp.getActive().getSheetByName("Setup Sheet");
+  var time = sheet.getRange("C15").getValue();
+  createTrigger(time);
+}
+
+function createTrigger(time) {
+  if (!time) time = 10;
+
+  ScriptApp.newTrigger('sendReminder')
+    .timeBased()
+    .everyDays(1)
+    .atHour(time)
+    .create();
+}
+
+function removeTrigger() {
+  var allTriggers = ScriptApp.getProjectTriggers();
+
+  for (var i = 0; i < allTriggers.length; i++) {
+    if (allTriggers[i].getHandlerFunction() == "sendReminder") {
+      ScriptApp.deleteTrigger(allTriggers[i]);
+    }
+  }
+}
+
+/************* SEND REMINDER *************/
+function sendReminder() {
+  var ss = SpreadsheetApp.getActive();
+
+  var doerSheet = ss.getSheetByName("Doer List");
+  var doerData = doerSheet.getRange(1, 3, doerSheet.getLastRow(), 1).getValues();
+
+  var masterSheet = ss.getSheetByName("Master");
+  var data = masterSheet.getRange(2, 1, masterSheet.getLastRow() - 1, 8).getValues();
+
+  var tomorrow = new Date();
+  tomorrow.setHours(0,0,0,0);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  doerData.forEach(function(r) {
+    let email = r[0];
+    let tasks = [];
+
+    data.forEach(function(row) {
+      let doerEmail = row[1];
+      let lastDate = row[6];
+      let actual = row[7];
+      let name = row[0];
+      let task = row[5];
+
+      if (email === doerEmail && lastDate && lastDate.valueOf() === tomorrow.valueOf() && !actual) {
+        tasks.push("Task : " + task);
+      }
+    });
+
+    if (tasks.length > 0) {
+      let message = "Hello,\n\nYou have pending tasks for tomorrow:\n\n" +
+                    tasks.join("\n") +
+                    "\n\nPlease ignore if already completed.";
+
+      GmailApp.sendEmail(email, "Pending Tasks Reminder", message);
+    }
+  });
+}
+
+/************* ARCHIVE *************/
+function archive() {
+  var ss = SpreadsheetApp.getActive();
+  var sheet = ss.getSheetByName("Dashboard");
+  var arch = ss.getSheetByName("Archive");
+
+  var data = sheet.getRange(4, 1, 6, 4).getValues();
+  var name = sheet.getRange("A2").getValue();
+  var week = sheet.getRange("D2").getValue();
+
+  var ared = data[3][1];
+  var ayellow = data[3][2];
+  var pred = data[5][1];
+  var pyellow = data[5][2];
+
+  arch.appendRow([name, week, pred, pyellow, "", ared, ayellow, ""]);
+
+  sheet.getRange('B9:C9').clearContent();
+}
+
+/************* SEND TASK TO DOER *************/
+function sendToDoer() {
+  var ss = SpreadsheetApp.getActive();
+
+  var doerSheet = ss.getSheetByName("Doer List");
+  var doerData = doerSheet.getRange(1, 1, doerSheet.getLastRow(), 2).getValues();
+
+  var sheet = ss.getSheetByName("Send Tasks To Doer");
+  var range = sheet.getRange(4, 1, sheet.getLastRow() - 3, 2);
+
+  var htmlTable = SheetConverter.convertRange2html(range);
+
+  var name = sheet.getRange("A2").getValue();
+  var email = findinB(name, doerData);
+
+  var body = "Here are your tasks:<br><br>" + htmlTable;
+
+  GmailApp.sendEmail(email, 'Task Details', body, { htmlBody: body });
+}
+
+/************* ON CHANGE (AUTO TIMESTAMP) *************/
+function onChange(e) {
+  var sheet = e.source.getActiveSheet();
+  var cell = e.range;
+
+  if (sheet.getName() === "Master" && cell.getValue() === "Done") {
+    var row = cell.getRow();
+    var col = cell.getColumn();
+
+    var tsCell = sheet.getRange(row, col - 1);
+    if (!tsCell.getValue()) {
+      tsCell.setValue(new Date());
+    }
+  }
+}
+
+/************* CREATE ONCHANGE TRIGGER *************/
+function createOnChangeTrigger() {
+  ScriptApp.newTrigger('onChange')
+    .forSpreadsheet(SpreadsheetApp.getActive())
+    .onChange()
+    .create();
+}
